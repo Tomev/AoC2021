@@ -1,7 +1,7 @@
 __author__ = "Tomasz Rybotycki"
 
 """
-    This script contains 
+    This script contains solutions to day 6 problems.
 """
 
 from typing import List, Dict

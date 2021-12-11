@@ -1,7 +1,7 @@
 __author__ = "Tomasz Rybotycki"
 
 """
-    This script contains 
+    This script contains solution to the second day 2 problem.
 """
 
 def up(val, position):

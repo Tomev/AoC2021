@@ -1,7 +1,7 @@
 __author__ = "Tomasz Rybotycki"
 
 """
-    The aim of this script is to...
+    This script contains solutions to day 1 problems.
 """
 
 def main():
