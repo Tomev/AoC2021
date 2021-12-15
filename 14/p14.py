@@ -6,6 +6,9 @@ __author__ = "Tomasz Rybotycki"
 
 from typing import Tuple, Dict
 from tqdm import tqdm
+from collections import defaultdict
+from time import time
+from datetime import timedelta
 
 def add_polymerization_rule(line: str, rules: Dict[str, str]) -> None:
     line_parts = line.split(" -> ")
@@ -13,6 +16,7 @@ def add_polymerization_rule(line: str, rules: Dict[str, str]) -> None:
     # result = key[0] + line_parts[1].strip("\n") + key[1]
     result = key[0] + line_parts[1].strip("\n")
     rules[key] = result
+
 
 def prepare_input() -> Tuple[str, Dict[str, str]]:
 
@@ -32,10 +36,10 @@ def prepare_input() -> Tuple[str, Dict[str, str]]:
     return polymer_template, polymerization_rules
 
 
-def ps() -> None:
-    # This probably can be somehow optimized.
+def p1() -> None:
+    # Brute force is 2 slow for 40 steps.
     polymer_template, polymerization_rules = prepare_input()
-    steps_number = 40
+    steps_number = 10
 
     for _ in tqdm(range(steps_number)):
         current_polymer = ""
@@ -54,10 +58,47 @@ def ps() -> None:
     print(polymer_template)
     print(max(symbols_occurrences) - min(symbols_occurrences))
 
+def p2() -> None:
+    s = time()
+    polymer_template, polymerization_rules = prepare_input()
+    steps_number = 40
+
+    current_pairs = defaultdict(lambda : 0)
+
+    for i in range(len(polymer_template) - 1):
+        pair = polymer_template[i] + polymer_template[i + 1]
+        current_pairs[pair] += 1
+
+    for _ in tqdm(range(steps_number)):
+        new_pairs = defaultdict(lambda : 0)
+
+        for pair in current_pairs:
+            new_pairs[polymerization_rules[pair]] += current_pairs[pair]
+            new_pairs[polymerization_rules[pair][-1] + pair[-1]] += current_pairs[pair]
+
+        current_pairs = new_pairs
+
+    counts = defaultdict(lambda : 0)
+
+    for pair in current_pairs:
+        counts[pair[0]] += current_pairs[pair]
+        counts[pair[1]] += current_pairs[pair]
+
+    counts[polymer_template[0]] += 1
+    counts[polymer_template[-1]] += 1
+
+    vals = []
+
+    for key in counts:
+        vals.append(counts[key])
+
+    print((max(vals) - min(vals)) // 2)
+    print(timedelta(seconds=time() - s))
 
 
 def main():
-    ps()
+    p1()
+    p2()
 
 
 if __name__ == "__main__":
