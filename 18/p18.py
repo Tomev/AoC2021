@@ -12,19 +12,21 @@ class SnailNumber:
         self.parent = parent
 
         if type(left) is list:
-            left = SnailNumber(left[0], left[1], nesting_level, self)
+            left = SnailNumber(left[0], left[1], nesting_level)
 
         if type(left) is SnailNumber:
             left = deepcopy(left)
+            left.parent = self
             left.increase_nesting_level()
 
         self.left = left
 
         if type(right) is list:
-            right = SnailNumber(right[0], right[1], nesting_level, self)
+            right = SnailNumber(right[0], right[1], nesting_level)
 
         if type(right) is SnailNumber:
             right = deepcopy(right)
+            right.parent = self
             right.increase_nesting_level()
 
         self.right = right
@@ -75,13 +77,30 @@ class SnailNumber:
             root = root.parent
         return root
 
+    def find_first_int_from_left(self, node_id):
+
+        if self.parent == None:
+            return None
+
+        if id(self.parent.left) == id(self):
+            return self.parent.find_first_int_from_left(id(self.parent))
+        else:
+            return self.parent.left.find_rightmost_int()
+
+    def find_rightmost_int(self):
+        if isinstance(self.right, int):
+            return self.right
+        else:
+            return self.right.find_rightmost_int()
+
+
+
+
+
 def p1() -> None:
     a = SnailNumber([6,[5,[4,[3,2]]]],1)
-    a_root = a.get_root()
-    print(a_root)
-    print(a.left.get_root())
-    a_r_r_root = a.left.right.right.right.get_root()
-    print(a_r_r_root)
+    a.explode()
+    print(a)
 
 
 
